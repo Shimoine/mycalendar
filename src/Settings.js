@@ -129,7 +129,10 @@ const Settings = () => {
         const savedCalendars = localStorage.getItem('calendar_list');
         return savedCalendars ? JSON.parse(savedCalendars) : [];
     });
-    const [selectedCalendars, setSelectedCalendars] = useState(new Set());
+    const [selectedCalendars, setSelectedCalendars] = useState(() => {
+        const savedSelectedCalendars = localStorage.getItem('selected_calendars');
+        return savedSelectedCalendars ? new Set(JSON.parse(savedSelectedCalendars)) : new Set();
+    });
     const navigate = useNavigate();
     const hasProcessedCallback = useRef(false);
 
@@ -166,7 +169,6 @@ const Settings = () => {
             setCalendars(calendarList);
         }
     };
-
     const handleCalendarToggle = (calendarId) => {
         setSelectedCalendars(prev => {
             const newSelected = new Set(prev);
@@ -175,6 +177,7 @@ const Settings = () => {
             } else {
                 newSelected.add(calendarId);
             }
+            localStorage.setItem('selected_calendars', JSON.stringify(Array.from(newSelected)));
             return newSelected;
         });
     };
